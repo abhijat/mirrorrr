@@ -130,7 +130,7 @@ class MirroredContent(object):
             # Startswith() because there could be a 'charset=UTF-8' in the header.
             if page_content_type.startswith(content_type):
                 content = transform_content.TransformContent(base_url, mirrored_url,
-                                                             content.decode('utf-8'))
+                                                             content.decode('UTF-8'))
                 break
 
         # If the transformed content is over 1MB, truncate it (yikes!)
@@ -223,9 +223,16 @@ class MirrorHandler(BaseHandler):
                 'max-age=%d' % EXPIRATION_DELTA_SECONDS
 
         self.write(content.data)
+        # There appears to be a problem with tornado here?
+        if 'content-type' in content.headers:
+            self.set_header('Content-Type', content.headers['content-type'])
 
 if __name__ == "__main__":
+
+    logging.basicConfig(filename='mirrorr.log', level=logging.DEBUG)
+
     from tornado.options import define, options
+    logging.warn("Warning")
     define('port', default=8080, type=int)
     app = tornado.web.Application(handlers=[(r'/', HomeHandler),
                                             (r'/main', HomeHandler),

@@ -1,0 +1,2 @@
+Code modified to run off a normal server, using tornado
+Minor changes only, mostly to replace GAE dependencies.
